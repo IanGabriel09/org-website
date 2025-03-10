@@ -1,0 +1,13 @@
+{
+    "name": "vendor/org-website",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Vendor\\OrgWebsite\\": "src/"
+        }
+    },
+    "minimum-stability": "stable",
+    "require": {
+        "phpmailer/phpmailer": "^6.9"
+    }
+}

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCS - Blogs</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Bootstrap 5.3.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" href="../../css/protected_styles.css">
+    <style>
+        .table-responsive {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        thead {
+            position: sticky;
+            top: 0;
+        }
+        .blog-img {
+            height: auto;
+            width: 75px !important;
+        }
+    </style>
+
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <nav id="sidebar" class="custom-box-shadow">
+            <!-- Retain this for the sidebar offset to work -->
+            <button id="sidebarCollapse" class="toggle-btn rounded"><i class="bi bi-list"></i></button>
+        </nav>
+    
+        <!-- Page Content  -->
+        <div id="content">
+            
+            <!-- Page Nav (Not really a Nav but a header) -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <div class="d-flex justify-content-between w-100">
+                        <div class="d-flex align-items-center">
+                            <h2 class="m-0 mx-2">Sample Organization</h2>
+                        </div>
+
+                        <a href="../_auth_protected/auth_protected.html"><i class="bi bi-power text-black fs-1"></i></a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="p-5">
+                <div class="row gy-3">
+
+                    <!-- Uploading Posts Section -->
+                    <div class="col-lg-4 col-md-12">
+                        <div class="bg-white p-3 rounded custom-box-shadow">
+                            <form id="postForm">
+                                <div class="row">
+                                    <h1>Upload Posts</h1>
+    
+                                    <div class="col-12 mb-2">
+                                        <label>Title:</label>
+                                        <input type="text" id="blogTitle" name="blogTitle" class="form-control" required>
+                                    </div>
+
+                                    <div class="col-12 mb-2">
+                                        <label>Content:</label>
+                                        <textarea name="blogContent" id="blogContent" rows="7" class="form-control"></textarea>
+                                    </div>
+
+                                    <div class="col-12 mb-2">
+                                        <label>Image Upload:</label>
+                                        <input type="file" id="blogImg" name="blogImg" class="form-control" required>
+                                    </div>
+
+                                    <div class="col-12 mb-2 text-center">
+                                        <input type="submit" class="btn btn-custom" value="Submit">
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+
+                    <div class="col-lg-8 col-md-12">
+                        <div class="bg-white p-3 rounded custom-box-shadow">
+                            <div class="text-center">
+                                <h5>Blog Posts Table</h5>
+                            </div>
+                            <hr>
+                            <div class="table-responsive">
+                                <table class="table table-striped w-100">
+                                    <thead>
+                                        <tr>
+                                            <th>Blog ID</th>
+                                            <th>Date Uploaded</th>
+                                            <th>Blog Title</th>
+                                            <th>Image</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tableBody" class="table-body">
+                                        <!-- Populated via ajax call to php endpoint -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Setting posts as featured section -->
+                    <div class="col-lg-4 col-md-12">
+                        <div class="bg-white p-3 rounded custom-box-shadow">
+                            <form id="featuredForm">
+                                <div class="row">
+                                    <h1>Set Featured Posts</h1>
+    
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-2">
+                                        <label>Blog ID</label>
+                                        <select name="selectBlog" id="selectBlog" class="form-select">
+                                            <option selected disabled>--Select--</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-lg-6 col-md-6 col-sm-12 mb-3">
+                                        <label>Featured Order</label>
+                                        <input type="number" name="featuredOrder" id="featuredOrder" class="form-control" min="1" max="3" step="1">
+                                    </div>
+
+                                    <div class="col-12 mb-2 text-center">
+                                        <input type="submit" class="btn btn-custom" value="Set As Featured">
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>     
+                    </div>
+
+                    <div class="col-lg-8 col-md-12">
+                        <div class="bg-white p-3 rounded custom-box-shadow">
+                            <div class="text-center">
+                                <h5>Featured Posts Table</h5>
+                            </div>
+                            <hr>
+                            <div class="table-responsive">
+                                <table class="table table-striped w-100">
+                                    <thead>
+                                        <tr>
+                                            <th>Blog ID</th>
+                                            <th>Featured Order</th>
+                                            <th>Date Uploaded</th>
+                                            <th>Blog Title</th>
+                                            <th>Image</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tableBodyFeatured" class="table-body">
+                                        <!-- Populated via ajax call to php endpoint -->
+
+                                    </tbody>
+                                </table>
+                                <p id="featuredWarning" class="text-danger d-none"><i class="bi bi-exclamation-triangle text-danger"></i>Warning: Featured posts must be 3. Please set the right amount to avoid errors in Client side.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+        </div>
+    </div>
+
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap 5.3.3 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+
+    <!-- Admin component loader -->
+    <script src="../../../_components/adminComponentLoader.js"></script>
+
+    <!-- Auth handling script -->
+    <script src="../_auth_protected/auth_check.js"></script>
+
+    <!-- Page script -->
+    <script>
+        // Function for toggling sidebar off and on screen
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+            
+            // Check if the screen width is larger than 768px
+            if ($(window).width() > 768) {
+                // For larger screens, the body margin is adjusted
+                if ($('#sidebar').hasClass('active')) {
+                    $('body').css('margin-left', '0');
+                    $('#sidebarCollapse i').removeClass('bi-list').addClass('bi-caret-right-fill');
+                } else {
+                    $('body').css('margin-left', '250px');
+                    $('#sidebarCollapse i').removeClass('bi-caret-right-fill').addClass('bi-list');
+                }
+            }
+        });
+
+        // ------- All Blog Functions -------//
+        // Function for submitting upload posts form
+        $('#postForm').submit(function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);  // Use FormData to handle file inputs
+
+            $.ajax({
+                url: './upload_blog.php',
+                type: 'POST',
+                data: formData,
+                contentType: false,  // Let jQuery determine the content type
+                processData: false,  // Let jQuery handle the data processing
+                success: function(response) {
+                    console.log(response);
+                    alert(response.message);
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    alert('Internal browser error, please check browser logs.');
+                    console.error(error);
+                }
+            })
+        });
+
+        // Function to show all posts
+        function populateTable() {
+            const tableBody = $('#tableBody');
+            tableBody.empty();
+
+            $.ajax({
+                url: './fetch_blog.php',
+                type: 'GET',
+                dataType: 'JSON',
+                success: function(response) {
+                    if(response.status === 'success') {
+                        let tableRows = '';
+
+                        response.data.forEach(function(item) {
+                            const date = new Date(item.upload_date); 
+                            const formattedDate = date.toISOString().split('T')[0];
+
+                            tableRows += `
+                                <tr>
+                                    <td>${item.blog_num}</td>
+                                    <td>${formattedDate}</td>
+                                    <td>${item.blog_title}</td>
+                                    <td><img src="../../../assets/img/blogImg/${item.blog_img}" alt="" class="blog-img"></td>
+                                    <td><button class="btn btn-danger" onclick="deleteBlog('${item.blog_num}')">Delete</button></td>
+                                </tr>
+                            `;
+                        });
+
+                        tableBody.html(tableRows);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Internal browser error, please check browser logs.');
+                    console.error(error);
+                }
+
+            });
+
+        }
+
+        function deleteBlog(blogID) {
+            let confirmDelete = confirm('Are you sure you want to delete this post? If this is a featured post then it will be deleted as well.');
+
+            if(confirmDelete) {
+                $.ajax({
+                    url: './delete_blog.php',
+                    type: 'POST',
+                    data: {deleteID: blogID},
+                    dataType: 'JSON',
+                    success: function(response) {
+                        console.log(response);
+                        alert(response.message);
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Internal browser error, please check browser logs.');
+                        console.error(error); 
+                    }
+                })
+            } else {
+                return;
+            }
+        }
+
+        // ------- Featured Functions -------//
+        // Function for setting featured posts
+        $('#featuredForm').submit(function(e) {
+            e.preventDefault();
+
+            const formData = $(this).serialize();
+
+            $.ajax({
+                url: './set_featured.php',
+                type: 'POST',
+                data: formData,
+                dataType: 'JSON',
+                success: function(response) {
+                    console.log(response);
+                    alert(response.message);
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    alert('Internal browser error, please check browser logs.');
+                    console.error(error);
+                }
+            });
+        });
+
+        // Function for fetching all blog IDS (for blog ID select dropdown)
+        function fetchBlogID() {
+            $.ajax({
+                url: './fetch_blog.php',
+                type: 'GET',
+                dataType: 'JSON',
+                success: function(response) {
+                    let selectBlog = $('#selectBlog');
+
+                    response.data.forEach(function(item) {
+                        let content = `
+                            <option value="${item.blog_num}">${item.blog_num}</option>
+                        `
+
+                        selectBlog.append(content);
+                    });
+
+                },
+                error: function(xhr, status, error) {
+                    alert('Internal browser error, please check browser logs.');
+                    console.error(error);  
+                }
+            });
+        }
+
+        // Function for fetching all featured posts
+        function populateFeatured() {
+            $.ajax({
+                url: './fetch_featured.php',
+                type: 'GET',
+                dataType: 'JSON',
+                success: function(response) {
+                    console.log(response);
+
+                    const showWarning = false;
+                    let warning = $('#featuredWarning');
+                    let featured = $('#tableBodyFeatured');
+                    let content;
+                    featured.empty();
+
+                    response.featuredBlogs.forEach(function(item) {
+                        content += `
+                            <tr>
+                                <td>${item.blog_num}</td>
+                                <td>${item.featured_order}</td>
+                                <td>${item.upload_date}</td>
+                                <td>${item.blog_title}</td>
+                                <td><img src="../../../assets/img/blogImg/${item.blog_img}" alt="" class="blog-img"></td>
+                                <td><button class="btn btn-danger" onclick="deleteFeatured('${item.blog_num}')">Delete</button></td>
+                            </tr>
+                         `;
+                    });
+
+                    // SHows featured post warning
+                    if(response.rowCount < 3) {
+                        warning.removeClass('d-none');
+                        featured.html(content);
+                    } else {
+                        warning.addClass('d-none');
+                        featured.html(content);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Internal browser error, please check browser logs.');
+                    console.error(error);
+                }
+            })
+        }
+
+        function deleteFeatured(blogID) {
+            let confirmDelete = confirm('Are you sure you want to delete this featured blog?');
+
+            if(confirmDelete) {
+                $.ajax({
+                    url: './delete_featured.php',
+                    type: 'POST',
+                    data: { deleteID: blogID },
+                    dataType: 'JSON',
+                    success: function(response) {
+                        alert(response.message);
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Internal browser error, please check browser logs.');
+                        console.error(error);
+                    }
+                });
+            } else {
+                return;
+            }
+        }
+
+        $(document).ready(function() {
+            populateTable();
+            populateFeatured();
+            fetchBlogID();
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,259 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOME</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Bootstrap 5.3.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Data AOS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- CSS for pagination JS -->
+    <link href="./node_modules/paginationjs/dist/pagination.css" rel="stylesheet" type="text/css">
+
+    <!-- Custom css -->
+    <link rel="stylesheet" href="./src/css/styles.css">
+
+    <style>
+        .recent-post-img {
+            width: auto;
+            height: 200px !important;
+        }
+        .blog-img {
+            width: 100%;
+            max-height: 500px !important;
+            object-fit: cover;
+        }
+        @media (max-width: 991px) {
+            .recent-posts-h {
+                text-align: center !important;
+            } 
+        }
+    </style>
+
+</head>
+<body>
+    <div id="nav"></div>
+
+    
+    <div class="content mt-5">
+
+         <div class="container">
+
+            <!-- Populated via Ajax endpoint -->
+            <div id="blogContent"></div>
+
+            <div id="navigation" class="d-flex justify-content-end">
+                <button id="prevBlog" class="btn btn-outline-danger custom-radius mx-1" style="display:none;"><i class="bi bi-chevron-left"></i> Previous</button>
+                <button id="nextBlog" class="btn btn-outline-danger custom-radius mx-1" style="display:none;">Next <i class="bi bi-chevron-right"></i></button>
+            </div>
+            
+
+            <br>
+
+            <div>
+                <h3 class="recent-posts-h">Check Our Recent Posts</h3>
+                <hr>
+                <div id="recentBlogs" class="row g-3 d-flex justify-content-center">
+
+                </div>
+                
+            </div>
+
+            
+         </div>
+         
+
+    </div>
+
+    <br><br>
+
+    <div id="footer"></div>
+
+
+    <!-- Include sheets JS -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.17.0/dist/xlsx.full.min.js"></script>
+    <!-- Include google charts -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <!-- Bootstrap 5.3.3 JS Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Pagination JS -->
+    <script src="./node_modules/paginationjs/src/pagination.js"></script>
+
+    <!-- Data AOS JS CDN -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- Component loader script -->
+    <script src="./_components/componentLoader.js"></script>
+
+    <!-- Session Checker script -->
+    <script src="./src/js/session_check/sessionCheck.js"></script>
+     
+    <script>
+        AOS.init({
+            once: true // Ensures animations happen only once
+        });
+
+        // Global Blog Data
+        let blogs = [];
+        let selectedBlogIndex = null; // The index of the currently displayed blog
+        const blogNum = sessionStorage.getItem('blogNum'); // Get the starting blog number from sessionStorage
+
+        function fetchBlog() {
+            $.ajax({
+                url: './_indexSRC/fetch_posts.php',
+                type: 'GET',
+                dataType: 'JSON',
+                success: function(response) {
+                    blogs = response.blogs;
+
+                    // Find the blog from sessionStorage
+                    selectedBlogIndex = blogs.findIndex(blog => blog.blog_num === String(blogNum));
+                    selectedBlog = blogs[selectedBlogIndex] || null;
+
+                    // If blog is not found, show an alert and return
+                    if (!selectedBlog) {
+                        alert("Blog not found! Redirecting back to Home.");
+                        window.location.href = './index.html';
+                    }
+
+                    renderBlog(selectedBlog);
+                    setupNavigation();
+                },
+                error: function(xhr, status, error) {
+                    alert('Internal server error. Please check browser console.');
+                    console.error(error);
+                }
+            });
+        }
+
+        function renderBlog(blog) {
+            let title = $('#blogContent');
+
+            // Convert newlines into <br> tags for preserving line breaks
+            const formattedContent = blog.blog_content.replace(/\n/g, '<br>');
+
+            let titleContent = `
+                <div id="Title" class="header-featured mb-3" data-aos="fade-up">
+                    <h1 class="fs-header font-header text-center">${blog.blog_title}</h1>
+                </div>
+
+                <div id="content mb-5">
+                    <img src="./assets/img/blogImg/${blog.blog_img}" alt="" class="img-fluid blog-img" data-aos="fade-up" data-aos-delay="100">
+                    <br>
+                    <br>
+                    <p class="lead" data-aos="fade-up" data-aos-delay="300">${formattedContent}</p>
+                </div>
+            `;
+
+            title.empty(); // Clear any previous content
+
+            // Ensure the content is inserted as HTML
+            title.html(titleContent); // use `.html()` instead of `.append()` to render HTML properly
+        }
+
+
+        // Function to set up the navigation buttons
+        function setupNavigation() {
+            // Show the next and previous buttons only if there's more than one blog
+            $('#prevBlog').show();
+            $('#nextBlog').show();
+
+            // Disable "Previous" button if we're on the first blog
+            if (selectedBlogIndex === 0) {
+                $('#prevBlog').prop('disabled', true);
+            } else {
+                $('#prevBlog').prop('disabled', false);
+            }
+
+            // Disable "Next" button if we're on the last blog
+            if (selectedBlogIndex === blogs.length - 1) {
+                $('#nextBlog').prop('disabled', true);
+            } else {
+                $('#nextBlog').prop('disabled', false);
+            }
+        }
+
+        // Handle clicking "Previous"
+        $('#prevBlog').on('click', function() {
+            if (selectedBlogIndex > 0) {
+                selectedBlogIndex--; // Move to the previous blog
+                selectedBlog = blogs[selectedBlogIndex];
+                renderBlog(selectedBlog); // Re-render the new blog
+                setupNavigation(); // Update navigation buttons
+            }
+        });
+
+        // Handle clicking "Next"
+        $('#nextBlog').on('click', function() {
+            if (selectedBlogIndex < blogs.length - 1) {
+                selectedBlogIndex++; // Move to the next blog
+                selectedBlog = blogs[selectedBlogIndex];
+                renderBlog(selectedBlog); // Re-render the new blog
+                setupNavigation(); // Update navigation buttons
+            }
+        });
+
+        function populateRecent() {
+            $.ajax({
+                url: './_indexSRC/fetch_recent.php',
+                type: 'GET',
+                dataType: 'JSON',
+                success: function(response) {
+                    let div = $('#recentBlogs');
+
+                    console.log(recentBlogs);
+
+                    response.recentBlogs.forEach(function(item) {
+                        // Convert timestamp to date
+                        const date = new Date(item.upload_date); 
+                        const formattedDate = date.toISOString().split('T')[0];
+
+                        let content = `
+                            <div class="col-lg-4 col-md-6 col-sm-12 text-center">
+                                <img src="./assets/img/blogImg/${item.blog_img}" alt="" class="recent-post-img img-fluid">
+                                <p class="show-cursor lead fw-bold m-0" onclick="redirectView('${item.blog_num}')">${item.blog_title}</p>
+                                <small class="text-muted">${formattedDate}</small>
+                            </div>
+                        `;
+
+                        div.append(content);
+                    });
+
+                    console.log(response.recentBlogs);
+                },
+                error: function(xhr, status, error) {
+                    alert('Internal server error. Please check browser console.');
+                    console.error(error);
+                }
+            })
+        }
+
+        function redirectView(sessionBlogNum) {
+            sessionStorage.setItem('blogNum', sessionBlogNum);
+            window.location.href = './indexViewBlog.html';
+        }
+
+        // Initialize the blog content when the document is ready
+        $(document).ready(function() {
+            fetchBlog();
+            populateRecent();
+        });
+
+
+
+        
+    </script>
+    
+</body>
+</html>

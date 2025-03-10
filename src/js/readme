@@ -1,0 +1,6 @@
+sessionCheck.js is a custom code designed to check the authetication of users within the site. It is used by all    
+pages check_auth.php simply fetches the user in localStorage after sign-in.
+and searches the db table for matching names, it then returns a response to the js if it exists or not.  
+
+Notes:
+*When redirecting in pages, use the 'scriptDirectory' variable and concatenate it to your page location.

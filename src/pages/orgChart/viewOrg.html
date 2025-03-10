@@ -1,0 +1,157 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORG-CHART</title>
+
+    <!-- Include sheets JS -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.17.0/dist/xlsx.full.min.js"></script>
+    <!-- Include google charts -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Bootstrap 5.3.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Data AOS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../css/styles.css">
+    
+    <style>
+        @media (max-width: 768px) {
+            .search-div {
+                width: 50% !important;
+            }
+        }
+
+        .org-chart-container {
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        .org-chart-description {
+            font-size: 1.1em;
+            margin-bottom: 40px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+
+</head>
+<body>
+    <div id="nav"></div>
+
+
+    <div class="content mt-5">
+        <div class="container">
+
+            <!-- Organization Chart Section -->
+            <div class="org-chart-container">
+                <div data-aos="fade-up">
+                    <h5>Sample Company</h5>
+                    <h2>Organizational Structure</h2>
+                    <p class="org-chart-description text-muted">
+                        Welcome to our organizational chart. This chart visually represents the hierarchy and structure of our organization. 
+                        From top management to department heads, it shows how our teams are interconnected and the leadership guiding them.
+                    </p>
+                </div>
+
+
+                <!-- Google Chart Container -->
+                <div id="org_chart" style="width: 100%; height: 700px;" data-aos="fade-up" data-aos-delay="200"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="footer"></div>
+
+    <!-- Include sheets JS -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.17.0/dist/xlsx.full.min.js"></script>
+    <!-- Include google charts -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap 5.3.3 JS Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Data AOS JS CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+
+    <!-- Component loader script -->
+    <script src="../../../_components/componentLoader.js"></script>
+    <!-- Session Checker script -->
+    <script src="../../js/session_check/sessionCheck.js"></script>
+
+    <script>
+    AOS.init({
+        once: true // Ensures animations happen only once
+    });
+
+    const filePath = sessionStorage.getItem('filePath');  // Fetch the file path from sessionStorage
+
+    // Google Charts Org Chart
+    google.charts.load('current', {
+        packages: ['orgchart']
+    });
+
+    google.charts.setOnLoadCallback(drawChart);
+
+    function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Name');
+        data.addColumn('string', 'Manager');
+        data.addColumn('string', 'ToolTip');
+
+        // Fetch and read the Excel file
+        fetch(filePath)
+            .then(response => response.arrayBuffer())
+            .then(dataBuffer => {
+                const workbook = XLSX.read(dataBuffer, { type: 'array' });
+                const sheetName = workbook.SheetNames[0];  // Assuming the first sheet contains the data
+                const sheet = workbook.Sheets[sheetName];
+                
+                // Parse the sheet into a JSON object
+                const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+                // Loop through the data and build the rows for OrgChart
+                const rows = [];
+                jsonData.forEach((row, index) => {
+                    if (index === 0) return;  // Skip header row if exists
+                    const employee = row[0]; // Employee
+                    const manager = row[1];  // Manager
+                    const toolTip = `${employee}<br/><span style="color: #6c757d; font-size: small;;">${manager}</span>`;
+                    rows.push([employee, manager, toolTip]);
+                });
+
+                // Adding the root element (CEO or top manager)
+
+
+                // Add the rows to the chart data
+                data.addRows(rows);
+
+                // Draw the org chart
+                var chart = new google.visualization.OrgChart(document.getElementById('org_chart'));
+                chart.draw(data, {
+                    allowHtml: true,
+                    nodeClass: 'org-node',
+                    size: 'large',
+                });
+            })
+            .catch(error => console.error('Error fetching the file:', error));
+    }
+
+    $(document).ready(function() {
+        console.log(sessionStorage.getItem('filePath'));  // For debugging
+    });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,139 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&display=swap');
+
+:root {
+    --primary-color: #707880;
+    --secondary-color: #e9e7e7;
+    --accent-color: #e9f7ef;
+
+    --dark-color: #272727;
+    --dark-color-hover: #424242;
+
+    --font-style1: "Archivo Black", sans-serif;
+}
+html, body {
+    height: 100%;  /* Full height for the page */
+    margin: 0;     /* Remove default margin */
+    display: flex;
+    flex-direction: column;
+}
+body {
+    background-color: #f8f9fa !important;
+}
+body > .footer {
+    margin-top: auto;
+    width: 100%;
+}
+
+/* ---------------------------------------------------
+   AUTH STYLE
+----------------------------------------------------- */
+
+.tcs-auth-logo {
+    height: 150px !important;
+    width: auto !important;
+}
+
+/* ---------------------------------------------------
+    PAGE STYLES
+----------------------------------------------------- */
+.content {
+    flex-grow: 1;  /* Ensures content section takes up available space */
+}
+.nav-logo {
+    height: 100px !important;
+    width: auto;
+}
+.navbar .nav-link {
+    box-sizing: border-box !important;
+    border-radius: 5px !important;
+    padding: 10px !important;
+}
+@media (max-width: 991px) {
+    .navbar .nav-link {
+        display: inline-flex !important;
+    }
+}
+.navbar .active {
+    background-color: var(--dark-color);
+    color: #fff !important;
+}
+.navbar .active:hover {
+    background-color: var(--dark-color-hover);
+}
+
+.footer {
+    margin-top: auto;  /* Pushes footer to the bottom */
+    width: 100%;       /* Ensure the footer takes up full width */
+}
+
+/* ---------------------------------------------------
+    REUSABLE STYLES
+----------------------------------------------------- */
+.show-cursor {
+    cursor: pointer !important;
+}
+.custom-box-shadow {
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px !important;
+}
+.custom-box-shadow1 {
+    box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px !important;
+}
+.custom-text-color {
+    color: var(--accent-color) !important;
+}
+.custom-bg-color {
+    background-color: var(--secondary-color) !important;
+}
+
+.custom-bg-color1 {
+    background-color: var(--accent-color) !important;
+}
+.custom-radius {
+    border-radius: 98px 98px 97px 97px;
+}
+.footer-bg-color {
+    background-color: var(--dark-color) !important;
+}
+
+/* ---------------------------------------------------
+    CUSTOM ELEMENT STYLES
+----------------------------------------------------- */
+.btn-custom {
+    color: #fff !important;
+    background-color: var(--dark-color) !important;
+}
+.btn-custom:hover {
+    background-color: var(--dark-color-hover) !important;
+}
+.fs-header {
+    font-size: clamp(35px, 5vw, 65px);
+}
+.font-header {
+    font-family: var(--font-style1) !important;
+}
+
+
+/* ---------------------------------------------------
+    SIZES
+----------------------------------------------------- */
+.custom-text-sm {
+    font-size: smaller !important;
+}
+
+
+/* ---------------------------------------------------
+    Loaders
+----------------------------------------------------- */
+.loader {
+    width: fit-content;
+    font-weight: bold;
+    font-family: sans-serif;
+    font-size: 30px;
+    padding: 0 5px 8px 0;
+    background: repeating-linear-gradient(90deg,currentColor 0 8%,#0000 0 10%) 200% 100%/200% 3px no-repeat;
+    animation: l3 2s steps(6) infinite;
+}
+.loader:before {
+    content:"Loading..."
+}
+@keyframes l3 {to{background-position: 80% 100%}}

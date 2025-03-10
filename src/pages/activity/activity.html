@@ -1,0 +1,219 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACTIVITIES</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Bootstrap 5.3.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Data AOS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+
+    <!-- Isotope CSS (Optional, if you want specific styling) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/isotope/3.0.6/isotope.pkgd.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../css/styles.css">
+    
+    <style>
+        @media (max-width: 991px) {
+            #picsPerRow {
+                display: none !important;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .album-nav {
+                width: 100% !important;
+            }
+        }
+    </style>
+
+</head>
+<body>
+    <div id="nav"></div>
+
+    <div class="content mt-5">
+        <div class="container">
+            <div class="text-center" data-aos="fade-up">
+                <h3>Company Activities</h3>
+                <p class="text-muted">Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p>
+            </div>
+            
+            <div class="p-3 rounded border mb-5" data-aos="fade-up" data-aos-delay="200">
+                <div class="d-flex gy-2">
+                    <select name="sort" id="sort" class="form-select w-25 mb-3 mx-2">
+                    </select>
+                    
+                    <select id="picsPerRow" class="form-select w-25 mb-3" onchange="picsPerRow()">
+                        <option value="3">Three per row</option>
+                        <option value="4">Four per row</option>
+                        <option value="6">Six per row</option>
+                    </select>
+                </div>
+
+                
+
+                <div class="text-center">
+                    <p class="lead">Photo Album</p>
+                    <div class="d-flex justify-content-center mb-3">
+                        <div class="loader d-none"></div>
+                    </div>
+
+                </div>
+
+                <!-- album container -->
+                <div class="row gy-3" id="albumGrid">
+                    <!-- <div class="col-lg-4 col-md-6 col-sm-12 item event1">
+                        <img src="https://placehold.co/600x400?text=Event+1" class="img-fluid" alt="">
+                    </div> -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer"></div>
+
+
+
+    <!-- Include sheets JS -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.17.0/dist/xlsx.full.min.js"></script>
+    <!-- Include google charts -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap 5.3.3 JS Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Data AOS JS CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <!-- Isotope JS cdn -->
+    <script src="https://unpkg.com/isotope-layout@3/dist/isotope.pkgd.min.js"></script>
+
+    <!-- Component loader script -->
+    <script src="../../../_components/componentLoader.js"></script>
+    <!-- Session Checker script -->
+    <script src="../../js/session_check/sessionCheck.js"></script>
+
+    <script>
+        AOS.init({
+            once: true // Ensures animations happen only once
+        });
+
+        function fetchImg() {
+            const eventName = $('#sort').val(); // Get the selected event name
+
+            // Show the loader when fetching begins
+            $('.loader').removeClass('d-none');
+
+            $.ajax({
+                url: './fetch_events.php',  // The PHP file that returns the event data
+                type: 'POST',
+                data: { eventName: eventName },  // Sending the selected event name to the server
+                dataType: 'JSON',
+                success: function(response) {
+                    // Clear the album grid before appending new data
+                    $('#albumGrid').empty();
+
+                    // Loop through the response (event data)
+                    response.forEach(function(event) {
+                        // Create the HTML structure for each event
+                        let eventItem = `
+                            <div class="col-lg-4 col-md-6 col-sm-12 item ${event.event_name}">
+                                <img src="${event.event_pic}" 
+                                    class="img-fluid" 
+                                    alt="${event.event_name}" 
+                                    style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                        `;
+
+                        // Append the event item to the album grid
+                        $('#albumGrid').append(eventItem);
+                    });
+
+                    // After fetching new events, adjust the grid layout based on picsPerRow value
+                    picsPerRow();  // This will update the column layout
+                },
+                error: function(xhr, status, error) {
+                    console.log('Error fetching events:', error);
+                },
+                complete: function() {
+                    // Hide the loader after the operation completes (whether it was successful or not)
+                    $('.loader').addClass('d-none');
+                }
+            });
+        }
+
+        function picsPerRow() {
+            var picsPerRow = parseInt($('#picsPerRow').val());  // Get the selected value (3, 4, 6)
+            
+            // Set column width based on the selected value
+            var colWidth = 12 / picsPerRow;  // Calculate width of each column (e.g., 12 / 3 = 4 for 3 per row)
+            
+            // Adjust column classes accordingly
+            $('.row .item').each(function() {
+                $(this).removeClass('col-lg-4 col-md-6 col-sm-12 col-lg-3 col-md-4 col-sm-6 col-lg-2 col-md-3 col-sm-4'); // Remove old column classes
+                
+                // Add new column classes dynamically based on selected row option
+                if (picsPerRow === 3) {
+                    $(this).addClass('col-lg-4 col-md-6 col-sm-12');  // 3 per row, 4 columns in large screens
+                } else if (picsPerRow === 4) {
+                    $(this).addClass('col-lg-3 col-md-4 col-sm-6');  // 4 per row, 3 columns in large screens
+                } else if (picsPerRow === 6) {
+                    $(this).addClass('col-lg-2 col-md-3 col-sm-4');  // 6 per row, 2 columns in large screens
+                }
+            });
+        }
+
+        function populateSortOption() {
+            let sortElement = $('#sort');
+            
+            $.ajax({
+                url: './sort_events.php',  // The PHP file that returns event names
+                type: 'GET',
+                dataType: 'JSON',
+                success: function(response) {
+                    // Clear any existing options in the dropdown
+                    sortElement.empty();
+
+                    // Add the "All" option first
+                    let optionsHTML = '<option value="All" class="filter-button">All</option>';
+
+                    // Loop through the response and create options using template literal
+                    response.forEach(function(eventName) {
+                        optionsHTML += `<option value="${eventName}" class="filter-button">${eventName}</option>`;
+                    });
+
+                    // Append the generated options HTML to the dropdown
+                    sortElement.append(optionsHTML);
+
+                    // Call fetchImg after the options are populated
+                    fetchImg(); // Fetch images after sort options are populated
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error loading events:', error);
+                }
+            });
+        }
+
+        // Bind change event to the sort dropdown and fetch images
+        $('#sort').on('change', function() {
+            fetchImg();  // Call fetchImg when sort option changes
+        });
+
+        // Call fetchImg on page load to populate the album grid
+        $(document).ready(function() {
+            populateSortOption(); // Populate the sort dropdown and fetch images
+        });
+
+    </script>
+    
+</body>
+</html>

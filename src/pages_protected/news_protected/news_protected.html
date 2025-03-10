@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCS - News</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Bootstrap 5.3.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" href="../../css/protected_styles.css">
+    <style>
+
+
+    </style>
+
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <nav id="sidebar" class="custom-box-shadow">
+            <!-- Retain this for the sidebar offset to work -->
+            <button id="sidebarCollapse" class="toggle-btn rounded"><i class="bi bi-list"></i></button>
+        </nav>
+
+    
+        <!-- Page Content  -->
+        <div id="content">
+            
+            <!-- Page Nav (Not really a Nav but a header) -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <div class="d-flex justify-content-between w-100">
+                        <div class="d-flex align-items-center">
+                            <h2 class="m-0 mx-2">Sample Organization</h2>
+                        </div>
+
+                        <a href="../_auth_protected/auth_protected.html"><i class="bi bi-power text-black fs-1"></i></a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="p-5">
+                <div class="row gy-3">
+                    <div class="col-lg-4 col-md-12">
+                        <div class="bg-white p-3 rounded custom-box-shadow">
+                            <h1>Upload News</h1>
+            
+                            <form id="newsForm" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-12 mb-3">
+                                        <label for="">News Name</label>
+                                        <input type="text" id="news_name" name="news_name" class="form-control" required>
+                                    </div>
+
+                                    <div class="col-lg-6 col-md-12 mb-3">
+                                        <label for="">Expected Date:</label>
+                                        <input type="date" id="dateExpected" name="dateExpected" class="form-control">
+                                    </div>
+
+                                    <div class="col-12 mb-3">
+                                        <label for="">News Description</label>
+                                        <textarea name="newsDesc" id="newsDesc" rows="5" class="form-control"></textarea>
+                                    </div>
+
+                                    <div class="col-12 mb-3">
+                                        <label for="">Upload News Image</label>
+                                        <input type="file" id="newsPic" name="newsPic" accept="image/*" class="form-control" required>
+                                        <i class="text-muted">"Only Accepts Images under 1MB"</i>
+                                    </div>
+                                    
+                                    <div class="col-12 mb-3 text-center">
+                                        <button type="submit" class="btn btn-custom">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                    </div>
+
+                    <div class="col-lg-8 col-md-12">
+                        <div class="bg-white p-3 rounded custom-box-shadow">
+                            <div class="text-center">
+                                <h5>News Table</h5>
+                            </div>
+                            <hr>
+                            <div class="table-responsive">
+                                <table class="table table-striped w-100">
+                                    <thead>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Date Uploaded</th>
+                                            <th>News Name</th>
+                                            <th>News Img</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="table-body"  id="newsTable">
+                                        <!-- Populated via ajax call to php endpoint -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+        </div>
+    </div>
+
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap 5.3.3 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+
+    <!-- Admin component loader -->
+    <script src="../../../_components/adminComponentLoader.js"></script>
+
+    <!-- Auth handling script -->
+    <script src="../_auth_protected/auth_check.js"></script>
+
+
+    <!-- Page script -->
+    <script>
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+            
+            // Check if the screen width is larger than 768px
+            if ($(window).width() > 768) {
+                // For larger screens, the body margin is adjusted
+                if ($('#sidebar').hasClass('active')) {
+                    $('body').css('margin-left', '0');
+                    $('#sidebarCollapse i').removeClass('bi-list').addClass('bi-caret-right-fill');
+                } else {
+                    $('body').css('margin-left', '250px');
+                    $('#sidebarCollapse i').removeClass('bi-caret-right-fill').addClass('bi-list');
+                }
+            }
+        });
+
+        $('#newsForm').submit(function(e) {
+            e.preventDefault();
+
+            var formData = new FormData(this);  // Create a FormData object from the form
+
+            $.ajax({
+                url: './upload_news.php',  // Your PHP file
+                type: 'POST',
+                data: formData,  // Use FormData instead of serialize() otherwise wont work.
+                dataType: 'JSON',
+                contentType: false,  // Important: don't set contentType as it will automatically set the correct type
+                processData: false,  // Important: don't process the data, so files can be uploaded
+                success: function(response) {
+                    alert(response.message);
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    alert('Internal server error, please check browser logs.');
+                    console.error(error);
+                }
+            });
+        });
+
+        function fetchNews() {
+            $.ajax({
+                url: './fetch_news.php',
+                type: 'GET',
+                dataType: 'JSON',
+                success: function(response) {
+                    const div = $('#newsTable');
+                    let rowCount = 1;
+
+                    response.forEach(function(item) {
+                        let content = `
+                            <tr>
+                                <td>${rowCount}</td>
+                                <td>${item.expected_date}</td> 
+                                <td>${item.news_name}</td>
+                                <td>
+                                    ${item.news_img ? `<img src="${item.news_img}" alt="${item.news_name}" style="max-width: 100px; max-height: 100px;">` : 'No Image'}
+                                </td>
+                                <td><button type="button" class="btn btn-danger" onclick="deleteNews('${item.news_id}')">Delete</button></td>
+                            </tr>
+                        `;
+
+                        div.append(content);
+                        rowCount++;
+                    });
+                },
+                error: function(xhr, status, error) {
+                    alert('Internal browser error, please check browser logs.');
+                    console.error(error); // Log the error for debugging
+                }
+            });
+
+        }
+
+        function deleteNews(id) {
+            let deleteConfirm = confirm('Are you sure you want to delete this news data? This action is irreversible.');
+
+            if(deleteConfirm) {
+                $.ajax({
+                    url: './delete_news.php',
+                    type: 'POST',
+                    data: { deleteID: id },
+                    dataType: 'JSON',
+                    success: function(response) {
+                        alert(response.message);
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Internal browser error, please check browser logs.');
+                        console.error(error); // Log the error for debugging
+                    }
+                });
+            } else {
+                return;
+            }
+        }
+
+        $(document).ready(function() {
+            fetchNews();
+        });
+    </script>
+
+</body>
+</html>

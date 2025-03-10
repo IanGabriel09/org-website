@@ -1,0 +1,131 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Bootstrap 5.3.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Data AOS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- Custom css -->
+    <link rel="stylesheet" href="../../css/styles.css">
+
+    <style>
+        .form-container {
+            width: 30% !important;
+        }
+
+        @media (max-width: 991px) {
+            .form-container {
+                width: 60% !important;
+            }
+        }
+        @media (max-width: 576px) {
+            .form-container {
+                width: 100% !important;
+            }
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="container h-100 d-flex justify-content-center align-items-center">
+        <div class="form-container p-4 bg-white custom-box-shadow">
+            <div class="text-center">
+                <img src="../../../assets/img/TCS-logo.png" alt="" class="tcs-auth-logo img-fluid">
+                <h3>Sign in to your Account</h3>
+            </div>
+
+            <form id="authForm">
+                <div class="mb-3">
+                    <label for="">Email:</label>
+                    <input type="email" id="email" name="email" class="form-control">
+                </div>
+    
+                <div class="">
+                    <label for="">Password:</label>
+                    <input type="password" id="pass" name="pass" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <a href="./register.html">Don't have an account? Sign-up here</a>
+                </div>
+
+                <div class="mb-3 text-end">
+                    <input type="submit" class="btn btn-custom" value="Log In">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Include sheets JS -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.17.0/dist/xlsx.full.min.js"></script>
+    <!-- Include google charts -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap 5.3.3 JS Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Data AOS JS CDN -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+     
+    <script>
+        AOS.init({
+            once: true // Ensures animations happen only once
+        });
+        // Set the cookie with the user email and calculated expiration time
+        // document.cookie = "username=" + userEmail + "; expires=" + expirationTime.toUTCString() + "; path=/";
+
+        // Function to run when login button is clicked
+        $('#authForm').submit(function(e) {
+            e.preventDefault();
+
+            var formData = $(this).serialize();
+            $.ajax({
+                url: './sign_in.php',
+                type: 'POST',
+                data: formData,
+                dataType: 'JSON',
+                success: function(response) {
+                    if(response.status === 'success') {
+                        alert('Login successful!');
+                        const userEmail = response.user.email;
+                        const currentTimestamp = new Date().getTime();
+                        const expirationTime = currentTimestamp + 1 * 60 * 1000; // 1 minute expiration time
+
+                        // Save user email, login timestamp, and session expiration time in localStorage
+                        localStorage.setItem('userEmail', userEmail);
+                        localStorage.setItem('activityTimestamp', currentTimestamp); // Store activity timestamp (login time)
+                        localStorage.setItem('sessionExpirationTime', expirationTime); // Set session expiration based on login time
+
+                        // Redirect to another page (e.g., the user's dashboard)
+                        window.location.href = '../../../index.html';
+                    } else {
+                        alert('Login failed. ' + response.message);
+                    }
+                },
+                error(xhr, status, error) {
+                    alert('Internal server error. Please check browser console.');
+                    console.error(error);
+                }
+            });
+        })
+
+        $(document).ready(function() {
+            localStorage.clear();
+        });
+
+
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCS - Companies</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Bootstrap 5.3.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <link rel="stylesheet" href="../../css/protected_styles.css">
+    <style>
+        .table-responsive {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        thead {
+            position: sticky;
+            top: 0;
+        }
+
+        td {
+            vertical-align: middle;
+        }
+
+        .company-img {
+            height: auto;
+            width: 75px !important;
+        }
+    </style>
+
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <nav id="sidebar" class="custom-box-shadow">
+            <!-- Retain this for the sidebar offset to work -->
+            <button id="sidebarCollapse" class="toggle-btn rounded"><i class="bi bi-list"></i></button>
+        </nav>
+
+    
+        <!-- Page Content  -->
+        <div id="content">
+            
+            <!-- Page Nav (Not really a Nav but a header) -->
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <div class="container-fluid">
+                    <div class="d-flex justify-content-between w-100">
+                        <div class="d-flex align-items-center">
+                            <h2 class="m-0 mx-2">Sample Organization</h2>
+                        </div>
+
+                        <a href="../_auth_protected/auth_protected.html"><i class="bi bi-power text-black fs-1"></i></a>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="p-5">
+                <div class="row gy-3">
+                    <div class="col-lg-4 col-md-12">
+                        <div class="bg-white p-3 rounded custom-box-shadow">
+                            <form id="companyForm">
+                                <div class="row">
+                                    <h1>Upload Company</h1>
+    
+                                    <div class="col-lg-6 col-md-12 mb-2">
+                                        <label>Company Name:</label>
+                                        <input type="text" id="companyName" name="companyName" class="form-control" required>
+                                    </div>
+
+                                    <div class="col-lg-6 col-md-12 mb-2">
+                                        <label>Date Established:</label>
+                                        <input type="date" id="dateEstablished" name="dateEstablished" class="form-control" required>
+                                    </div>
+
+                                    <div class="col-12 mb-2">
+                                        <label>Company Address:</label>
+                                        <input type="text" id="companyAddress" name="companyAddress" class="form-control" required>
+                                    </div>
+
+                                    <div class="col-lg-6 col-md-12 mb-2">
+                                        <label>Email Address:</label>
+                                        <input type="text" id="companyEmail" name="companyEmail" class="form-control" required>
+                                    </div>
+
+                                    <div class="col-lg-6 col-md-12 mb-2">
+                                        <label>Contact:</label>
+                                        <input type="text" id="companyContact" name="companyContact" class="form-control" required>
+                                    </div>
+
+                                    <div class="col-12 mb-2">
+                                        <label>Website Link:</label>
+                                        <input type="text" id="webLink" name="webLink" class="form-control" required>
+                                    </div>
+
+                                    <div class="col-12 mb-2">
+                                        <label for="">Company Description</label>
+                                        <textarea name="companyDesc" id="companyDesc" class="form-control" rows="6"></textarea>
+                                    </div>
+
+                                    <div class="col-12 mb-2">
+                                        <label for="">Company Image</label>
+                                        <input type="file" id="companyImg" name="companyImg" class="form-control">
+                                    </div>
+                                    
+                                    <div class="col-12 mb-2 text-center">
+                                        <input type="submit" class="btn btn-custom" value="Submit">
+                                    </div>
+
+
+
+                                    
+                                </div>
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-lg-8 col-md-12">
+                        <div class="bg-white p-3 rounded custom-box-shadow">
+                            <div class="text-center">
+                                <h5>List of Affiliate Companies</h5>
+                            </div>
+                            <hr>
+                            <div class="table-responsive">
+                                <table class="table table-striped w-100" id="orgTable">
+                                    <thead>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Company Name</th>
+                                            <th>Email</th>
+                                            <th>Contact</th>
+                                            <th>Web-Link</th>
+                                            <th>Image</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tableBody" class="table-body">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+    
+        </div>
+    </div>
+
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Bootstrap 5.3.3 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+
+    <!-- Admin component loader -->
+    <script src="../../../_components/adminComponentLoader.js"></script>
+
+    <!-- Auth handling script -->
+    <script src="../_auth_protected/auth_check.js"></script>
+
+    <!-- Page script -->
+    <script>
+        // Function for toggling sidebar off and on screen
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+            
+            // Check if the screen width is larger than 768px
+            if ($(window).width() > 768) {
+                // For larger screens, the body margin is adjusted
+                if ($('#sidebar').hasClass('active')) {
+                    $('body').css('margin-left', '0');
+                    $('#sidebarCollapse i').removeClass('bi-list').addClass('bi-caret-right-fill');
+                } else {
+                    $('body').css('margin-left', '250px');
+                    $('#sidebarCollapse i').removeClass('bi-caret-right-fill').addClass('bi-list');
+                }
+            }
+        });
+
+        // Submits data
+        $('#companyForm').submit(function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);  // Use FormData to handle file inputs
+
+            $.ajax({
+                url: './upload_company.php',  // Specify your PHP script to handle the upload
+                type: 'POST',
+                data: formData,
+                contentType: false,  // Let jQuery determine the content type
+                processData: false,  // Let jQuery handle the data processing
+                success: function(response){
+                    alert(response.message);
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    alert('Internal browser error, please check browser logs.');
+                    console.error(error);
+                },
+            });
+        });
+
+        // Fetches data
+        function populateTable() {
+            const tableBody = $('#tableBody');
+            tableBody.empty();
+
+            $.ajax({
+                url: './fetch_company.php',
+                type: 'GET',
+                dataType: 'JSON',
+                success: function(response) {
+                    if(response.status === 'success') {
+                        let tableRows = '';
+                        let count = 1;
+
+                        response.data.forEach(function(item) {
+                            tableRows += `
+                                <tr>
+                                    <td>${count}</td>
+                                    <td>${item.company_name}</td>
+                                    <td>${item.email}</td>
+                                    <td>${item.contact}</td>
+                                    <td><a href="${item.web_link}" target="_blank">WebLink</a></td>
+                                    <td><img src="../../../assets/img/companyImg/${item.company_img}" alt="" class="company-img"></td>
+                                    <td><button class="btn btn-danger" onclick="deleteCompany('${item.company_id}')">Delete</button></td>
+                                </tr>
+                            `;
+
+                            count++;
+                        });
+
+                        tableBody.html(tableRows);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert('Internal browser error, please check browser logs.');
+                    console.error(error);
+                }
+
+            });
+        }
+
+        // Deletes data
+        function deleteCompany(deleteID) {
+            let confirmDelete = confirm('Are you sure you want to delete this company data?');
+
+            if(confirmDelete) {
+                $.ajax({
+                    url: './delete_company.php',
+                    type: 'POST',
+                    data: { companyID: deleteID },
+                    dataType: 'JSON',
+                    success: function(response) {
+                        alert(response.message);
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Internal browser error, please check browser logs.');
+                        console.error(error);
+                    }
+                })
+            }
+        }
+        
+        $(document).ready(function() {
+            populateTable();
+        });
+    </script>
+
+</body>
+</html>

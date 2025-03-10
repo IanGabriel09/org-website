@@ -1,0 +1,165 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORG-CHART</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <!-- Bootstrap 5.3.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <!-- Data AOS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
+
+    <!-- Custom css -->
+    <link rel="stylesheet" href="../../css/styles.css">
+    
+    <style>
+        .president-img {
+            height: 100px !important;
+            width: auto;
+        }
+        .time-period {
+            width: 30% !important;
+        }
+
+        @media (max-width: 768px) {
+            .search-div {
+                width: 50% !important;
+            }
+            .org-container {
+                display: block !important;
+            }
+        }
+
+
+    </style>
+
+</head>
+<body>
+    <div id="nav"></div>
+    
+    <div class="content mt-5">
+        <div class="container">
+            <!-- content head -->
+            <div class="d-flex content-head">
+                <div class="search-div">
+                    <p class="lead fw-bold">Search</p>
+                    <div class="input-group mb-3">
+                        <input type="text" id="searchBar" name="searchBar" class="form-control" placeholder="President Name" aria-label="President Name" aria-describedby="searchBtn">
+                        <button class="btn btn-outline-secondary" type="button" id="searchBtn">Search</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="contentBody" class="content-body mb-5">
+                <!-- Populated via ajax endpoint to PHP -->
+            </div>
+            
+        </div>
+    </div>
+
+    <div id="footer"></div>
+
+    <!-- Include sheets JS -->
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.17.0/dist/xlsx.full.min.js"></script>
+    <!-- Include google charts -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap 5.3.3 JS Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <!-- Data AOS JS CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    
+    <!-- Component loader script -->
+    <script src="../../../_components/componentLoader.js"></script>
+    <!-- Session Checker script -->
+    <script src="../../js/session_check/sessionCheck.js"></script>
+
+    <script>
+        AOS.init({
+            once: true // Ensures animations happen only once
+        });
+
+        let searchName = $('#searchBar').val();
+
+        $('#searchBtn').click(function() {
+            searchName = $('#searchBar').val();
+            populateContent(searchName);
+        });
+
+        // Function to populate content based on data from DB table
+        function populateContent(searchName) {
+            // If searchName is empty, we pass an empty string, otherwise, we pass the searchName
+            let dataToSend = searchName ? { president_name: searchName } : {};
+
+            $.ajax({
+                url: './fetch_org_all.php',
+                type: 'POST',
+                dataType: 'JSON',
+                data: dataToSend, // Send the search parameter as POST data
+                success: function(response) {
+                    let div = $('#contentBody');
+                    let aosCount = 0;
+                    div.empty();
+
+                    if (response.length === 0) {
+                        div.append('<p>No results found.</p>');
+                        return;
+                    }
+                    response.forEach(function(item) {
+                        // Format the period_start and period_end to show only the year
+                        let periodStartYear = new Date(item.period_start).getFullYear();
+                        let periodEndYear = new Date(item.period_end).getFullYear();
+
+                        // Create the image element with base64 data as src
+
+                        let content = `
+                            <div class="custom-box-shadow1 border p-3 mb-3" data-aos="fade-up" data-aos-delay='${aosCount}'>
+                                <div class="org-container d-flex">
+                                    <!-- Set the img src to the base64-encoded image data -->
+                                    <img src="${item.president_picture}" alt="" class="img-fluid president-img">
+                                    <div class="mx-3 my-2">
+                                        <h2>${item.president_name}</h2>
+                                        <h5>${item.company_name}</h5>
+                                        <div class="time-period">
+                                            <p class="text-muted"><i>${periodStartYear} - ${periodEndYear}</i></p>
+                                        </div>
+                                        <p class="lead">${item.company_description}</p>
+                                    </div>
+                                </div>
+
+                                <div class="text-end">
+                                    <button class="mt-3 btn btn-outline-primary" onclick="redirect('${item.excel_file}')">View</button>
+                                </div>
+                            </div>     
+                        `;
+
+                        div.append(content);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    alert('Internal browser error, please check browser logs.');
+                    console.error(error); // Log the error for debugging
+                }
+            });
+        }
+
+        function redirect(filePath) {
+            sessionStorage.setItem('filePath', filePath);
+            window.location.href = './viewOrg.html';
+        }
+
+        $(document).ready(function() {
+            populateContent(searchName);
+            sessionStorage.clear();
+        });
+    </script>
+    
+</body>
+</html>
