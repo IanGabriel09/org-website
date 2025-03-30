@@ -62,26 +62,19 @@
             </nav>
 
             <div class="p-5">
-                <div class="row gy-3">
+                <div class="row gy-3 mb-3">
+                    <!-- Upload company and add product img -->
                     <div class="col-lg-4 col-md-12">
-                        <div class="bg-white p-3 rounded custom-box-shadow">
+                        <!-- Upload form -->
+                        <div class="bg-white p-3 rounded custom-box-shadow mb-3">
                             <form id="companyForm">
                                 <div class="row">
                                     <h1>Upload Company</h1>
-    
+                                    
+                                    <!-- Company Info -->
                                     <div class="col-lg-6 col-md-12 mb-2">
                                         <label>Company Name:</label>
                                         <input type="text" id="companyName" name="companyName" class="form-control" required>
-                                    </div>
-
-                                    <div class="col-lg-6 col-md-12 mb-2">
-                                        <label>Date Established:</label>
-                                        <input type="date" id="dateEstablished" name="dateEstablished" class="form-control" required>
-                                    </div>
-
-                                    <div class="col-12 mb-2">
-                                        <label>Company Address:</label>
-                                        <input type="text" id="companyAddress" name="companyAddress" class="form-control" required>
                                     </div>
 
                                     <div class="col-lg-6 col-md-12 mb-2">
@@ -94,35 +87,40 @@
                                         <input type="text" id="companyContact" name="companyContact" class="form-control" required>
                                     </div>
 
+                                    <div class="col-lg-6 col-md-12 mb-2">
+                                        <label>Business Type:</label>
+                                        <input type="text" id="businessType" name="businessType" class="form-control" required>
+                                    </div>
+
+                                    <div class="col-12 mb-2">
+                                        <label>Company Description:</label>
+                                        <textarea name="companyDesc" id="companyDesc" rows="6" class="form-control" required></textarea>
+                                    </div>
+
                                     <div class="col-12 mb-2">
                                         <label>Website Link:</label>
                                         <input type="text" id="webLink" name="webLink" class="form-control" required>
                                     </div>
 
-                                    <div class="col-12 mb-2">
-                                        <label for="">Company Description</label>
-                                        <textarea name="companyDesc" id="companyDesc" class="form-control" rows="6"></textarea>
-                                    </div>
-
-                                    <div class="col-12 mb-2">
+                                    <div class="col-12 mb-3">
                                         <label for="">Company Image</label>
                                         <input type="file" id="companyImg" name="companyImg" class="form-control">
+                                        <p><i class="text-muted">(Leave as blank if no company logo)</i></p>
                                     </div>
-                                    
+
                                     <div class="col-12 mb-2 text-center">
-                                        <input type="submit" class="btn btn-custom" value="Submit">
+                                        <input type="submit" class="btn btn-custom" value="Upload Company">
                                     </div>
-
-
-
                                     
                                 </div>
                             </form>
-
                         </div>
+
+
 
                     </div>
 
+                    <!-- Company table list -->
                     <div class="col-lg-8 col-md-12">
                         <div class="bg-white p-3 rounded custom-box-shadow">
                             <div class="text-center">
@@ -136,7 +134,6 @@
                                             <th>No.</th>
                                             <th>Company Name</th>
                                             <th>Email</th>
-                                            <th>Contact</th>
                                             <th>Web-Link</th>
                                             <th>Image</th>
                                             <th>Action</th>
@@ -151,6 +148,99 @@
                     </div>
 
                 </div>
+
+                <hr>
+
+                <div class="row">
+                    <div class="col-lg-4 col-md-12 mb-3">
+                        <!-- Product info Form -->
+                        <div class="bg-white p-3 rounded custom-box-shadow">
+                            <form id="productInfoForm">
+                                <div class="row">
+                                    <!-- Product Info -->
+                                    <div class="text-center">
+                                        <h4>Product Information</h4>
+                                    </div>
+
+                                    <div class="col-12 mb-3">
+                                        <label for="">Company Name:</label>
+                                        <select name="searchCompanyName" id="searchCompanyName" class="form-select search-company-name">
+                                            <option selected disabled>--Select--</option>
+                                            <!-- Populated via ajax Endpoint -->
+                                        </select>
+                                    </div>
+    
+                                    <div id="productContainer" class="col-12">
+                                        <!-- Dynamic product card -->
+                                        <div class="card p-3 mb-3">
+                                            <div class="text-center">
+                                                <p class="lead">#Product No. 1</p>
+                                            </div>
+    
+                                            <div class="mb-2">
+                                                <label>Product Name:</label>
+                                                <input type="text" id="productName1" name="productName1" class="form-control" required>
+                                            </div>
+    
+                                            <div class="mb-2">
+                                                <label>Product Description:</label>
+                                                <textarea name="productDesc1" id="productDesc2" class="form-control" rows="5" required></textarea>
+                                            </div>
+    
+                                            <div class="mb-2">
+                                                <label for="">Product Image</label>
+                                                <input type="file" id="productImg" name="productImg" class="form-control" required>
+                                            </div>
+                                        </div>
+                                    </div>
+    
+                                    <div class="text-end mb-3">
+                                        <p id="addProductBtn" class="btn btn-outline-primary">Add</p>
+                                    </div>
+                                    
+                                    <hr>
+
+                                    <div class="text-center">
+                                        <input type="submit" class="btn btn-custom" value="Add Product">
+                                    </div>
+                                </div>
+    
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-8 col-md-12">
+                        <div class="bg-white p-3 rounded custom-box-shadow">
+                            <div class="text-center">
+                                <h5>Company Products</h5>
+                            </div>
+                            <hr>
+                            <div class="col-lg-4 col-md-12 mb-3">
+                                <select name="tableCompanyName" id="tableCompanyName" class="form-select search-company-name">
+                                    <option selected disabled>--Select--</option>
+                                    <!-- Populated via ajax Endpoint -->
+                                </select>
+                            </div>
+
+                            <div class="table-responsive">
+                                <table class="table table-striped w-100" id="productTable">
+                                    <thead>
+                                        <tr>
+                                            <th>No.</th>
+                                            <th>Product Name</th>
+                                            <th>Product Image</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="productTableBody" class="table-body">
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
     
         </div>
@@ -191,7 +281,6 @@
         // Submits data
         $('#companyForm').submit(function(e) {
             e.preventDefault();
-
             const formData = new FormData(this);  // Use FormData to handle file inputs
 
             $.ajax({
@@ -207,7 +296,7 @@
                 error: function(xhr, status, error) {
                     alert('Internal browser error, please check browser logs.');
                     console.error(error);
-                },
+                }
             });
         });
 
@@ -225,21 +314,30 @@
                         let tableRows = '';
                         let count = 1;
 
-                        response.data.forEach(function(item) {
-                            tableRows += `
-                                <tr>
-                                    <td>${count}</td>
-                                    <td>${item.company_name}</td>
-                                    <td>${item.email}</td>
-                                    <td>${item.contact}</td>
-                                    <td><a href="${item.web_link}" target="_blank">WebLink</a></td>
-                                    <td><img src="../../../assets/img/companyImg/${item.company_img}" alt="" class="company-img"></td>
-                                    <td><button class="btn btn-danger" onclick="deleteCompany('${item.company_id}')">Delete</button></td>
-                                </tr>
-                            `;
+                        if(response.data && response.data.length > 0) {
+                            response.data.forEach(function(item) {
+                                tableRows += `
+                                    <tr>
+                                        <td>${count}</td>
+                                        <td>${item.company_name}</td>
+                                        <td>${item.email}</td>
+                                        <td><a href="${item.web_link}" target="_blank">WebLink</a></td>
+                                        <td>
+                                        <img 
+                                            src="../../../assets/img/companyImg/${item.company_img}" 
+                                            alt="Company Image" 
+                                            class="company-img" 
+                                            onerror="this.onerror=null; this.src='https://placehold.co/600x400?text=IMG+Unavailable';">
+                                        </td>
+                                        <td><button class="btn btn-danger" onclick="deleteCompany('${item.company_id}')">Delete</button></td>
+                                    </tr>
+                                `;
 
-                            count++;
-                        });
+                                count++;
+                            });
+                        } else {
+                            tableContent = '<tr><td colspan="6" style="text-align: center;">No products found.</td></tr>';
+                        }
 
                         tableBody.html(tableRows);
                     }
@@ -274,8 +372,183 @@
             }
         }
         
+        //----------------------------//
+        // Product upload functionalities
+        //----------------------------//
+        $('#addProductBtn').click(function() {
+            let div = $('#productContainer');
+            let divCount = div.children('div').length + 1;
+
+            let content = `
+                <div class="card p-3 mb-3">
+                    <div class="text-center">
+                        <p class="lead">#Product No. ${divCount}</p>
+                    </div>
+
+                    <div class="mb-2">
+                        <label>Product Name:</label>
+                        <input type="text" id="productName${divCount}" name="productName${divCount}" class="form-control" required>
+                    </div>
+
+                    <div class="mb-2">
+                        <label>Product Description:</label>
+                        <textarea name="productDesc${divCount}" id="productDesc${divCount}" class="form-control" rows="5" required></textarea>
+                    </div>
+
+                    <div class="mb-2">
+                        <label for="">Product Image</label>
+                        <input type="file" id="productImg${divCount}" name="productImg${divCount}" class="form-control" required>
+                    </div>
+                </div>
+            `
+
+            div.append(content);
+        });
+
+        function fetchCompany() {
+            $.ajax({
+                url: './fetch_company.php',
+                type: 'GET',
+                dataType: 'JSON',
+                success: function(response) {
+                    let div = $('.search-company-name'); // For population of select statements in products
+
+                    response.data.forEach(function(item) {
+                        let content = `
+                            <option value="${item.company_id}">${item.company_name}</option>
+                        `;
+
+                        div.append(content);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    alert('Internal browser error, please check browser logs.');
+                    console.error(error);  
+                }
+            });
+        }
+
+        $('#productInfoForm').submit(function(e) {
+            e.preventDefault();
+            let companyName = $('#searchCompanyName').val();
+
+            // Check if the selected company name is '--Select--'
+            if (companyName === '--Select--') {
+                alert('Please select a valid company.');
+                return; // Stop further execution of the submit function
+            }
+
+            let submitData = {};
+            submitData.selectName = companyName;
+            let formData = new FormData();
+
+            // Append the select value to formData
+            formData.append('selectName', submitData.selectName);
+
+            $('#productContainer .card').each(function(index) {
+                let productName = $(this).find('input[name^="productName"]').val();
+                let productDesc = $(this).find('textarea[name^="productDesc"]').val();
+                let productImg = $(this).find('input[type="file"]').prop('files')[0];  // Getting file object (if any)
+
+                // Append product data to FormData object
+                formData.append(`productName${index}`, productName);
+                formData.append(`productDesc${index}`, productDesc);
+
+                if (productImg) {
+                    formData.append(`productImg${index}`, productImg);  // Add the file object here
+                }
+            });
+
+            console.log(formData);
+
+            // Send the FormData object via AJAX
+            $.ajax({
+                type: 'POST',
+                url: './upload_product.php',  // Change this to your endpoint
+                data: formData,
+                processData: false,  // Don't process the data
+                contentType: false,  // Let jQuery set the content-type to multipart/form-data
+                success: function(response) {
+                    console.log('Response: ', response);
+                    alert(response.message);
+                    location.reload();
+                },
+                error: function(error) {
+                    alert('Internal browser error, please check browser logs.');
+                    console.error(error);  
+                }
+            });
+        });
+
+        $('#tableCompanyName').change(function() {
+            let companyName = $('#tableCompanyName').val();
+
+            $.ajax({
+                url: './fetch_product.php',
+                type: 'POST',
+                data: { cName: companyName },
+                dataType: 'JSON',
+                success: function(response) {
+                    console.log(response);
+
+                    let tableBody = $('#productTableBody'); // Assuming you have a <tbody> with id "productTableBody"
+                    let tableContent = '';
+                    let count = 1;
+
+                    if (response.data && response.data.length > 0) {
+                        response.data.forEach(function(item) {
+                            tableContent += `
+                                <tr>
+                                    <td>${count}</td>
+                                    <td>${item.product_name}</td>
+                                    <td><img src="../../../assets/img/companyProducts/${item.product_image}" alt="${item.product_name}" class="company-img"></td>
+                                    <td><button class="btn btn-danger" onclick="deleteProduct('${item.product_image}')">Delete</button></td>
+                                </tr>
+                            `;
+                            count++;
+                        });
+                    } else {
+                        tableContent = '<tr><td colspan="4" style="text-align: center;">No products found.</td></tr>';
+                    }
+
+                    tableBody.html(tableContent); // Insert the content into the table body
+                },
+                error: function(xhr, status, error) {
+                    alert('Internal browser error, please check browser logs.');
+                    console.error(error);
+                }
+            });
+        });
+
+        function deleteProduct(prodImg) {
+            // Note we use Img here since its a UUID name
+            let confirmDelete = confirm('Are you sure you want to delete this product data?');
+
+            if(confirmDelete) {
+                $.ajax({
+                    url: './delete_product.php',
+                    type: 'POST',
+                    data: {productIMG: prodImg },
+                    dataType: 'JSON',
+                    success: function(response) {
+                        console.log(response);
+                        alert(response.message);
+                        location.reload();
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Internal browser error, please check browser logs.');
+                        console.error(error);  
+                    }
+                });
+            } else {
+                return;
+            }
+        }
+
+
         $(document).ready(function() {
             populateTable();
+            fetchCompany();
         });
     </script>
 

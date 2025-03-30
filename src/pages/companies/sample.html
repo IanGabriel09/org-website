@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expand and Unexpand Div</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .collapse-div {
+      overflow: hidden;
+      transition: height 0.5s ease, padding 0.5s ease;
+      height: 0;
+      padding: 0 15px;
+    }
+    .expanded {
+      height: 200px; /* Or any desired height */
+      padding: 15px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container mt-5">
+  <button id="toggleBtn" class="btn btn-primary">Expand</button>
+
+  <div id="expandableDiv" class="collapse-div">
+    <p>This is some hidden content inside the div.</p>
+    <p>More content can go here. It's initially hidden and will expand when you click the button!</p>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#toggleBtn').click(function() {
+      var $expandableDiv = $('#expandableDiv');
+
+      // Check if the div is expanded
+      if ($expandableDiv.hasClass('expanded')) {
+        // Collapse the div
+        $expandableDiv.removeClass('expanded');
+        $(this).text('Expand');
+      } else {
+        // Expand the div
+        $expandableDiv.addClass('expanded');
+        $(this).text('Collapse');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

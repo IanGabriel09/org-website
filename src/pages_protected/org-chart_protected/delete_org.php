@@ -6,21 +6,16 @@ header('Content-Type: application/json');
 $org_id = $_POST['id'];
 
 // Retrieve the file paths for both the excel file and the president picture from the database before deleting the record
-$stmt = $conn->prepare('SELECT excel_file, president_picture FROM excel_table WHERE id = ?');
+$stmt = $conn->prepare('SELECT excel_file FROM excel_table WHERE id = ?');
 $stmt->bind_param('s', $org_id);
 $stmt->execute();
-$stmt->bind_result($excel_file, $president_picture);
+$stmt->bind_result($excel_file);
 $stmt->fetch();
 $stmt->close();
 
 // If the excel file exists, delete it
 if (!empty($excel_file) && file_exists($excel_file)) {
     unlink($excel_file); // Delete the excel file from the server
-}
-
-// If the president picture exists, delete it
-if (!empty($president_picture) && file_exists($president_picture)) {
-    unlink($president_picture); // Delete the president picture from the server
 }
 
 // Now, delete the record from the database

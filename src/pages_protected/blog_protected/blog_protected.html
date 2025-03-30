@@ -245,20 +245,30 @@
                     if(response.status === 'success') {
                         let tableRows = '';
 
-                        response.data.forEach(function(item) {
-                            const date = new Date(item.upload_date); 
-                            const formattedDate = date.toISOString().split('T')[0];
+                        // Check if data exists
+                        if (response.data.length > 0) {
+                            response.data.forEach(function(item) {
+                                const date = new Date(item.upload_date); 
+                                const formattedDate = date.toISOString().split('T')[0];
 
-                            tableRows += `
+                                tableRows += `
+                                    <tr>
+                                        <td>${item.blog_num}</td>
+                                        <td>${formattedDate}</td>
+                                        <td>${item.blog_title}</td>
+                                        <td><img src="../../../assets/img/blogImg/${item.blog_img}" alt="" class="blog-img"></td>
+                                        <td><button class="btn btn-danger" onclick="deleteBlog('${item.blog_num}')">Delete</button></td>
+                                    </tr>
+                                `;
+                            });
+                        } else {
+                            // If no blog data, display "No Activity data found"
+                            tableRows = `
                                 <tr>
-                                    <td>${item.blog_num}</td>
-                                    <td>${formattedDate}</td>
-                                    <td>${item.blog_title}</td>
-                                    <td><img src="../../../assets/img/blogImg/${item.blog_img}" alt="" class="blog-img"></td>
-                                    <td><button class="btn btn-danger" onclick="deleteBlog('${item.blog_num}')">Delete</button></td>
+                                    <td colspan="5" class="text-center">No Blog data found</td>
                                 </tr>
                             `;
-                        });
+                        }
 
                         tableBody.html(tableRows);
                     }

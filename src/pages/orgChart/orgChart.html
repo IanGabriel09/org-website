@@ -19,14 +19,9 @@
     <link rel="stylesheet" href="../../css/styles.css">
     
     <style>
-        .president-img {
-            height: 100px !important;
-            width: auto;
+        .org-container {
+            overflow-x: scroll !important;
         }
-        .time-period {
-            width: 30% !important;
-        }
-
         @media (max-width: 768px) {
             .search-div {
                 width: 50% !important;
@@ -35,7 +30,6 @@
                 display: block !important;
             }
         }
-
 
     </style>
 
@@ -50,7 +44,7 @@
                 <div class="search-div">
                     <p class="lead fw-bold">Search</p>
                     <div class="input-group mb-3">
-                        <input type="text" id="searchBar" name="searchBar" class="form-control" placeholder="President Name" aria-label="President Name" aria-describedby="searchBtn">
+                        <input type="text" id="searchBar" name="searchBar" class="form-control" placeholder="Company Name" aria-label="President Name" aria-describedby="searchBtn">
                         <button class="btn btn-outline-secondary" type="button" id="searchBtn">Search</button>
                     </div>
                 </div>
@@ -86,23 +80,22 @@
             once: true // Ensures animations happen only once
         });
 
-        let searchName = $('#searchBar').val();
+        let searchCompany = $('#searchBar').val();
 
         $('#searchBtn').click(function() {
-            searchName = $('#searchBar').val();
-            populateContent(searchName);
+            searchCompany = $('#searchBar').val();
+            populateContent(searchCompany);
         });
 
         // Function to populate content based on data from DB table
-        function populateContent(searchName) {
-            // If searchName is empty, we pass an empty string, otherwise, we pass the searchName
-            let dataToSend = searchName ? { president_name: searchName } : {};
+        function populateContent(searchCompany) {
+            let dataToSend = searchCompany ? { company_name: searchCompany } : {};
 
             $.ajax({
                 url: './fetch_org_all.php',
                 type: 'POST',
                 dataType: 'JSON',
-                data: dataToSend, // Send the search parameter as POST data
+                data: dataToSend,
                 success: function(response) {
                     let div = $('#contentBody');
                     let aosCount = 0;
@@ -112,35 +105,37 @@
                         div.append('<p>No results found.</p>');
                         return;
                     }
+
+                    console.log(response);
                     response.forEach(function(item) {
                         // Format the period_start and period_end to show only the year
                         let periodStartYear = new Date(item.period_start).getFullYear();
                         let periodEndYear = new Date(item.period_end).getFullYear();
 
-                        // Create the image element with base64 data as src
+                        let filePath = item.excel_file;
 
+                        // Create the content box for each item
                         let content = `
-                            <div class="custom-box-shadow1 border p-3 mb-3" data-aos="fade-up" data-aos-delay='${aosCount}'>
-                                <div class="org-container d-flex">
-                                    <!-- Set the img src to the base64-encoded image data -->
-                                    <img src="${item.president_picture}" alt="" class="img-fluid president-img">
-                                    <div class="mx-3 my-2">
-                                        <h2>${item.president_name}</h2>
-                                        <h5>${item.company_name}</h5>
-                                        <div class="time-period">
-                                            <p class="text-muted"><i>${periodStartYear} - ${periodEndYear}</i></p>
-                                        </div>
-                                        <p class="lead">${item.company_description}</p>
-                                    </div>
+                            <div class="card rounded p-3 mb-3" data-aos="fade-up" data-aos-delay='${aosCount}'>
+                                <div class="mb-3">
+                                    <h3 class="fw-bold">${item.company_name}</h3>
+                                    <p class="text-muted">${item.period_start} - ${item.period_end}</p>
+                                    <p class="fs-5 text-muted"><i class="bi bi-quote"> ${item.company_description}</i></p>
+                                </div>
+                                
+                                <div class="border bg-light-subtle p-3">
+                                    <h5 class="text-center">Organizational Chart</h5>
+                                    <div class="org-container" id="org-chart-${aosCount}"></div>
                                 </div>
 
-                                <div class="text-end">
-                                    <button class="mt-3 btn btn-outline-primary" onclick="redirect('${item.excel_file}')">View</button>
-                                </div>
-                            </div>     
+                            </div>
                         `;
-
                         div.append(content);
+
+                        // Call function to draw the Org Chart
+                        drawOrgChart(filePath, `org-chart-${aosCount}`);
+
+                        aosCount++; // Increment for the next delay in AOS
                     });
                 },
                 error: function(xhr, status, error) {
@@ -150,13 +145,59 @@
             });
         }
 
-        function redirect(filePath) {
-            sessionStorage.setItem('filePath', filePath);
-            window.location.href = './viewOrg.html';
+        // Function to draw the Google Org Chart based on Excel file
+        function drawOrgChart(filePath, chartContainerId) {
+            google.charts.load('current', { packages: ['orgchart'] });
+            google.charts.setOnLoadCallback(function() {
+                var data = new google.visualization.DataTable();
+                data.addColumn('string', 'Name');
+                data.addColumn('string', 'Manager');
+                data.addColumn('string', 'ToolTip');
+
+                fetch(filePath)
+                    .then(response => response.arrayBuffer())
+                    .then(dataBuffer => {
+                        const workbook = XLSX.read(dataBuffer, { type: 'array' });
+                        const sheetName = workbook.SheetNames[0];
+                        const sheet = workbook.Sheets[sheetName];
+
+                        const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+                        const rows = [];
+                        jsonData.forEach((row, index) => {
+                            if (index === 0) return;  // Skip header row if exists
+                            const employee = row[0]; // Employee
+                            const manager = row[1];  // Manager
+
+                            // Check if employee and manager are valid strings, then apply replace
+                            const formattedEmployee = typeof employee === 'string' ? 
+                                employee.replace(/\((.*?)\)/g, '<br/><span style="font-weight: bold;">($1)</span>') : employee;
+                            const formattedManager = typeof manager === 'string' ? 
+                                manager.replace(/\((.*?)\)/g, '<br/><span style="font-weight: bold;">($1)</span>') : manager;
+                            
+                            const toolTip = `${formattedEmployee}<br/><span style="color: #6c757d; font-size: small;">${formattedManager}</span>`;
+                            rows.push([formattedEmployee, formattedManager, toolTip]);
+                        });
+
+                        data.addRows(rows);
+
+                        // Initialize the chart
+                        var chart = new google.visualization.OrgChart(document.getElementById(chartContainerId));
+                        chart.draw(data, {
+                            allowHtml: true,
+                            nodeClass: 'org-node',
+                            size: 'medium',
+                        });
+                    })
+                    .catch(error => console.error('Error fetching the file:', error));
+            });
         }
 
+
+
+
         $(document).ready(function() {
-            populateContent(searchName);
+            populateContent(searchCompany);
             sessionStorage.clear();
         });
     </script>

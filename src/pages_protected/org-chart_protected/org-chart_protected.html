@@ -52,22 +52,17 @@
                                 <div class="row">
                                     <h1>Upload Organization</h1>
     
-                                    <div class="col-6 mb-2">
+                                    <div class="col-12 mb-2">
                                         <label>Company Name:</label>
                                         <input type="text" id="companyName" name="companyName" class="form-control" required>
                                     </div>
-                
-                                    <div class="col-6 mb-2">
-                                        <label>President Name:</label>
-                                        <input type="text" id="presidentName" name="presidentName" class="form-control" required>
-                                    </div>
-    
-                                    <div class="col-6 mb-2">
+
+                                    <div class="col-lg-6 col-md-12 mb-2">
                                         <label>Start-Term:</label>
                                         <input type="date" id="startPeriod" name="startPeriod" class="form-control" required>
                                     </div>
     
-                                    <div class="col-6 mb-2">
+                                    <div class="col-lg-6 col-md-12 mb-2">
                                         <label>End-Term:</label>
                                         <input type="date" id="endPeriod" name="endPeriod" class="form-control" required>
                                     </div>
@@ -76,15 +71,9 @@
                                         <label>Company Description:</label>
                                         <textarea name="companyDesc" id="companyDesc" rows="5" class="form-control" required></textarea>
                                     </div>
-
-                                    <div class="col-12 mb-2">
-                                        <label for="">Upload President Picture</label>
-                                        <input type="file" id="presPic" name="presPic" accept="image/*" class="form-control" required>
-                                        <i class="text-muted">"Only Accepts Images under 1MB"</i>
-                                    </div>
                 
                                     <div class="col-12 mb-2">
-                                        <label for="">Excel File</label>
+                                        <label for="">Excel File <i>(For Org-Chart)</i></label>
                                         <input type="file" id="excel_file" name="excel_file" class="form-control" required>
                                     </div>
                 
@@ -112,7 +101,6 @@
                                             <th>No.</th>
                                             <th>Date Uploaded</th>
                                             <th>Time Period</th>
-                                            <th>President Name</th>
                                             <th>Company Name</th>
                                             <th>Action</th>
                                         </tr>
@@ -194,32 +182,39 @@
                 type: 'GET',
                 dataType: 'JSON',
                 success: function(response) {
-                    console.log(response)
+                    console.log(response);
                     let count = 1;
                     const div = $('#tableBody');
                     div.empty();
-                    response.forEach(function(item) {
-                        let periodStartYear = new Date(item.period_start).getFullYear();
-                        let periodEndYear = new Date(item.period_end).getFullYear();
 
-                        const date = new Date(item.date_created); 
-                        const formattedDate = date.toISOString().split('T')[0];
+                    if (response.length > 0) {
+                        response.forEach(function(item) {
+                            let periodStartYear = new Date(item.period_start).getFullYear();
+                            let periodEndYear = new Date(item.period_end).getFullYear();
 
-                        let content = `
+                            const date = new Date(item.date_created); 
+                            const formattedDate = date.toISOString().split('T')[0];
+
+                            let content = `
+                                <tr>
+                                    <td>${count}</td>
+                                    <td>${formattedDate}</td>
+                                    <td>${periodStartYear} - ${periodEndYear}</td>
+                                    <td>${item.company_name}</td>
+                                    <td><button type="button" class="btn btn-danger" onclick="deleteOrg('${item.id}')">Delete</button></td>
+                                </tr>
+                            `;
+                            div.append(content);
+                            count++;
+                        });
+                    } else {
+                        // If no data, display a "No Activity data found" message
+                        div.html(`
                             <tr>
-                                <td>${count}</td>
-                                <td>${formattedDate}</td>
-                                <td>${periodStartYear} - ${periodEndYear}</td>
-
-                                <td>${item.president_name}</td>
-                                <td>${item.company_name}</td>
-                                <td><button type="button" class="btn btn-danger" onclick="deleteOrg('${item.id}')">Delete</button></td>
+                                <td colspan="5" class="text-center">No data found</td>
                             </tr>
-                        `;
-                        div.append(content);
-                        count++;
-                    });
-
+                        `);
+                    }
                 },
                 error: function(xhr, status, error) {
                     alert('Internal server error. Please check browser logs');

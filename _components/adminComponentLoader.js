@@ -18,7 +18,6 @@ const createNav = () => {
                 <li><a href="${scriptComponentDir}../src/pages_protected/org-chart_protected/org-chart_protected.html" class="nav-link"><i class="bi bi-people-fill"></i> Org-Chart</a></li>
                 <li><a href="${scriptComponentDir}../src/pages_protected/companies_protected/companies_protected.html" class="nav-link"><i class="bi bi-building-check"></i> Companies</a></li>
                 <li><a href="${scriptComponentDir}../src/pages_protected/activities_protected/activities_protected.html" class="nav-link"><i class="bi bi-calendar-event"></i> Events</a></li>
-                <li><a href="${scriptComponentDir}../src/pages_protected/news_protected/news_protected.html" class="nav-link"><i class="bi bi-newspaper"></i> News</a></li>
             </ul>
         </div>
 

@@ -16,16 +16,9 @@ function generateUUID() {
 
 $id = generateUUID();
 $cName = $_POST['companyName'];
-$presName = $_POST['presidentName'];
 $startTerm = $_POST['startPeriod'];
 $endTerm = $_POST['endPeriod'];
 $cDesc = $_POST['companyDesc'];
-
-// Get the president's picture file and path
-$presPicTmpName = $_FILES['presPic']['tmp_name'];
-$presPicName = $_FILES['presPic']['name']; // The original name of the image file
-$imageDir = '../../../assets/img/presidentImg/'; // Directory to store the images
-$presPicPath = $imageDir . $presPicName; // Full path to the image
 
 // Get the Excel file details
 $fileName = $_FILES['excel_file']['name']; // Get the original Excel file name
@@ -34,15 +27,6 @@ $filePath = '../../../assets/excel/' . $fileName; // Directory path for the Exce
 // Check file extension to ensure it is an Excel file
 $fileExtension = pathinfo($fileName, PATHINFO_EXTENSION);
 $allowedExtensions = ['xls', 'xlsx'];
-
-// Validate president's picture size
-if ($_FILES['presPic']['size'] > MAX_FILE_SIZE) {
-    echo json_encode([
-        "status" => "error", 
-        "message" => "Image file is too large. Please upload a file smaller than 1MB."
-    ]);
-    exit();
-}
 
 // Validate the Excel file extension
 if (!in_array(strtolower($fileExtension), $allowedExtensions)) {
@@ -60,20 +44,6 @@ if (file_exists($filePath)) {
         "status" => "exists", 
         "message" => "Excel file already exists. Please rename the file and try again.", 
         "fileName" => $fileName
-    ]);
-    exit();
-}
-
-// Ensure the image directory exists
-if (!is_dir($imageDir)) {
-    mkdir($imageDir, 0777, true); // Create the directory if it doesn't exist
-}
-
-// Move the president's picture to the images directory
-if (!move_uploaded_file($presPicTmpName, $presPicPath)) {
-    echo json_encode([
-        "status" => "error", 
-        "message" => "Failed to upload the image file."
     ]);
     exit();
 }
@@ -97,8 +67,8 @@ if (!move_uploaded_file($_FILES['excel_file']['tmp_name'], $filePath)) {
 $date_created = date('Y-m-d H:i:s');
 
 // Prepare and execute the SQL query
-$stmt = $conn->prepare("INSERT INTO excel_table (id, period_start, period_end, president_name, company_name, company_description, excel_file, president_picture, date_created) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-$stmt->bind_param('sssssssss', $id, $startTerm, $endTerm, $presName, $cName, $cDesc, $filePath, $presPicPath, $date_created);
+$stmt = $conn->prepare("INSERT INTO excel_table (id, period_start, period_end, company_name, company_description, excel_file, date_created) VALUES (?, ?, ?, ?, ?, ?, ?)");
+$stmt->bind_param('sssssss', $id, $startTerm, $endTerm, $cName, $cDesc, $filePath, $date_created);
 
 // Execute the statement
 if ($stmt->execute()) {

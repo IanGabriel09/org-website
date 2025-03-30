@@ -3,12 +3,12 @@ require '../../../conn.php'; // Include your database connection
 
 header('Content-Type: application/json');
 
-$president_name = isset($_POST['president_name']) ? $_POST['president_name'] : '';
+$company_name = isset($_POST['company_name']) ? $_POST['company_name'] : '';
 
-if (!empty($president_name)) {
-    $sql = "SELECT * FROM `excel_table` WHERE `president_name` LIKE ? ORDER BY `date_created` ASC";
+if (!empty($company_name)) {
+    $sql = "SELECT * FROM `excel_table` WHERE `company_name` LIKE ? ORDER BY `date_created` ASC";
     $stmt = $conn->prepare($sql);
-    $searchTerm = '%' . $president_name . '%';
+    $searchTerm = '%' . $company_name . '%';
     $stmt->bind_param('s', $searchTerm);
 } else {
     $sql = "SELECT * FROM `excel_table` ORDER BY `date_created` ASC";
@@ -23,9 +23,6 @@ if ($stmt) {
     while ($row = $result->fetch_assoc()) {
         $row['period_start'] = date('Y', strtotime($row['period_start']));
         $row['period_end'] = date('Y', strtotime($row['period_end']));
-        if ($row['president_picture']) {
-            $row['president_picture'] = $row['president_picture'];
-        }
         $data[] = $row;
     }
 

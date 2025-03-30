@@ -8,6 +8,9 @@
     --dark-color: #272727;
     --dark-color-hover: #424242;
 
+    --foot-muted: #949393;
+    --foot-muted-hover: #b9b9b9;
+
     --font-style1: "Archivo Black", sans-serif;
 }
 html, body {
@@ -95,6 +98,8 @@ body > .footer {
     background-color: var(--dark-color) !important;
 }
 
+
+
 /* ---------------------------------------------------
     CUSTOM ELEMENT STYLES
 ----------------------------------------------------- */
@@ -105,11 +110,30 @@ body > .footer {
 .btn-custom:hover {
     background-color: var(--dark-color-hover) !important;
 }
+.btn-custom-outline {
+    border: 1px solid #272727 !important;
+    color: #272727 !important;
+    transition: 0.3s ease-out;
+}
+.btn-custom-outline:hover {
+    background-color: var(--dark-color) !important;
+    color: var(--secondary-color) !important;
+}
 .fs-header {
     font-size: clamp(35px, 5vw, 65px);
 }
 .font-header {
     font-family: var(--font-style1) !important;
+}
+.p-custom {
+    color: var(--foot-muted) !important;
+}
+.a-custom {
+    color: var(--foot-muted) !important;
+    transition: 0.3s ease-out; 
+}
+.a-custom:hover {
+    color: var(--foot-muted-hover) !important;
 }
 
 

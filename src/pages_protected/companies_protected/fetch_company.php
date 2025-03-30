@@ -10,18 +10,18 @@ $result = mysqli_query($conn, $sql);
 
 // Check if the query was successful
 if ($result) {
-    $events = array();
+    $companies = array();
     
     // Fetch all rows and store them in an array
     while ($row = mysqli_fetch_assoc($result)) {
-        $events[] = $row; // Store the event row in the events array
+        $companies[] = $row; // Store the event row in the companies array
     }
 
     // Output the result as JSON including the data
     echo json_encode([
         "status" => "success",
         "message" => "Data successfully fetched",
-        "data" => $events // Include the fetched data in the response
+        "data" => $companies // Include the fetched data in the response
     ]);
 } else {
     // If the query fails, return an error message

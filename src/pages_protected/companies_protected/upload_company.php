@@ -38,12 +38,11 @@ define('MAX_FILE_SIZE', 1048576); // 1MB = 1048576 bytes
 $company_id = generate_company_id();
 
 $company_name = $_POST['companyName'];
-$date_established = $_POST['dateEstablished'];
-$company_address = $_POST['companyAddress'];
+$business_type = $_POST['businessType'];
+$company_desc = $_POST['companyDesc'];
 $company_mail = $_POST['companyEmail'];
 $company_contact = $_POST['companyContact'];
-$web_link = $_POST['webLink'];
-$company_desc = $_POST['companyDesc'];
+$web_link = $_POST['webLink'];;
 
 // Convert Unix timestamp to MySQL DATETIME format
 $date_uploaded = date('Y-m-d H:i:s', time()); // Get current datetime in MySQL format
@@ -51,7 +50,7 @@ $date_uploaded = date('Y-m-d H:i:s', time()); // Get current datetime in MySQL f
 if ($_FILES['companyImg']['size'] > MAX_FILE_SIZE) {
     echo json_encode([
         "status" => "error", 
-        "message" => "Your news image is too large, file limitations are 1MB",
+        "message" => "Your Company image is too large, file limitations are 1MB",
     ]);
     exit();
 }
@@ -79,33 +78,44 @@ if ($result->num_rows > 0) {
 
 $stmt->close();
 
-// Move the uploaded image to the directory
-if (move_uploaded_file($companyImg['tmp_name'], $directory . $image_filename)) {
-    $stmt = $conn->prepare("INSERT INTO `affiliate_table` 
-        (`company_id`, `company_name`, `company_address`, `company_description`, `contact`, `email`, `date_established`, `web_link`, `company_img`, `date_uploaded`) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-
-    $stmt->bind_param('ssssssssss', $company_id, $company_name, $company_address, $company_desc, $company_contact, $company_mail, $date_established, $web_link, $image_filename, $date_uploaded);
-
-    if ($stmt->execute()) {
-        echo json_encode([
-            "status" => "success", 
-            "message" => "Company successfully added!",
-        ]);
+// Check if an image is uploaded
+if (isset($companyImg) && $companyImg['error'] === UPLOAD_ERR_OK) {
+    // Move the uploaded image to the directory
+    if (move_uploaded_file($companyImg['tmp_name'], $directory . $image_filename)) {
+        $image_param = $image_filename;
     } else {
         echo json_encode([
-            "status" => "error", 
-            "message" => "Failed to insert company data into the database.",
+            "status" => "error",
+            "message" => "Failed to upload the image.",
         ]);
+        exit;
     }
+} else {
+    // If no image is uploaded, set the image parameter as NULL or empty string
+    $image_param = null;  
+}
 
-    $stmt->close();
+// Prepare the SQL statement
+$stmt = $conn->prepare("INSERT INTO `affiliate_table` 
+    (`company_id`, `company_name`, `business_type`, `company_description`, `contact`, `email`, `web_link`, `company_img`, `date_uploaded`) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+$stmt->bind_param('sssssssss', $company_id, $company_name, $business_type, $company_desc, $company_contact, $company_mail, $web_link, $image_param, $date_uploaded);
+
+// Execute the statement
+if ($stmt->execute()) {
+    echo json_encode([
+        "status" => "success", 
+        "message" => "Company successfully added!",
+    ]);
 } else {
     echo json_encode([
         "status" => "error", 
-        "message" => "Failed to upload the image.",
+        "message" => "Failed to insert company data into the database.",
     ]);
 }
+
+$stmt->close();
 
 $conn->close();
 ?>

@@ -5,40 +5,38 @@ const scriptComponentDir = scriptComponentLocation.substring(0, scriptComponentL
 const createFoot = () => {
     const foot = document.createElement('div');
     foot.innerHTML = `
-    <div class="footer footer-bg-color p-5">
-        <div class="container">
-            <div class="d-lg-flex d-md-block">
-                <div class="col-md-3 col-sm-12 mb-3">
-                    <div class="mb-1"><a href="${scriptComponentDir}../src/pages/about/about.html" class="custom-text-color text-decoration-underline">About Us</a></div>
-                    <div class="mb-1"><a href="${scriptComponentDir}../src/pages/orgChart/orgChart.html" class="custom-text-color text-decoration-underline">Org Chart</a></div>
-                    <div class="mb-1"><a href="${scriptComponentDir}../src/pages/companies/companies.html" class="custom-text-color text-decoration-underline">Companies</a></div>
-                    <div class="mb-1"><a href="${scriptComponentDir}../src/pages/activity/activity.html" class="custom-text-color text-decoration-underline">Activity</a></div>
-                    <div class="mb-1"><a href="${scriptComponentDir}../src/pages/news/news.html" class="custom-text-color text-decoration-underline">News</a></div>
-                    <div class="mb-1"><a href="${scriptComponentDir}../src/pages/members/members.html" class="custom-text-color text-decoration-underline">Members</a></div>
+        <div class="footer footer-bg-color p-5">
+            <div class="container">
+                <div class="row mb-2">
+                    <div class="col-lg-6 col-md-12">
+                        <p class="lead text-white fs-3">About</p>
+                        <p class="p-custom text-light lead">
+                            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolorem ab sint, iure laborum architecto quod in ex quisquam corporis nulla temporibus ipsa, vero earum dolorum voluptatibus maiores iusto suscipit. Temporibus.
+                        </p>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6">
+                        <p class="lead text-white fs-3">Address</p>
+                        <p class="p-custom text-light">Taiwanese chamber of the south Phils. #13 , 5th street , Golden Mile Business park Carmona Cavite , Philippines</p>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6 px-md-5">
+                        <p class="lead text-white fs-3 m-0">Quick Links</p>
+                        <div><a href="${scriptComponentDir}../src/pages/about/about.html" class="a-custom text-decoration-none">About Us</a></div>
+                        <div><a href="${scriptComponentDir}../src/pages/orgChart/orgChart.html" class="a-custom text-decoration-none">Org Chart</a></div>
+                        <div><a href="${scriptComponentDir}../src/pages/companies/companies.html" class="a-custom text-decoration-none">Companies</a></div>
+                        <div><a href="${scriptComponentDir}../src/pages/activity/activity.html" class="a-custom text-decoration-none">Activities</a></div>
+                        <div><a href="${scriptComponentDir}../src/pages/members/members.html" class="a-custom text-decoration-none">Members</a></div>
+                    </div>
                 </div>
 
-                <div class="col-md-3 col-sm-12 mb-3">
-                    <div class="mb-3 d-flex align-items-center"><i class="custom-text-color fs-3 bi bi-facebook"></i> <a href="#" class="custom-text-color mx-2 text-decoration-none">Facebook</a></div>
-                    <div class="mb-3 d-flex align-items-center"><i class="custom-text-color fs-3 bi bi-instagram"></i> <a href="#" class="custom-text-color mx-2 text-decoration-none">Instagram</a></div>
-                    <div class="mb-3 d-flex align-items-center"><i class="custom-text-color fs-3 bi bi-twitter-x"></i> <a href="#" class="custom-text-color mx-2 text-decoration-none">Twitter-X</a></div>
+                <hr class="border-white">
+                <div class="text-center">
+                    <p class="p-custom">© 2025 Taiwanese Chamber of the South Philippines. All Rights Reserved.</p>
                 </div>
 
-                <div class="col-md-3 col-sm-12 mb-3">
-                    <p class="custom-text-color lead fw-bold m-0">Contacts & Address</p>
-                    <p class="custom-text-color m-0">+123-456-789</p>
-                    <p class="custom-text-color"> 307-A J. Figueras Street, Sampaloc Manila</p>
-                    <p class="custom-text-color m-0">Open Monday-Saturday</p>
-                    <p class="custom-text-color">8:00 AM to 5:00 PM</p>
-                </div>
-
-                <div class="col-md-3 col-sm-12 mb-3 text-center">
-                    <img src="https://placehold.co/200x100" alt="" class="img-fluid foot-img">
-                    <p class="custom-text-color lead mt-1 mb-0">PRIVACY POLICY</p>
-                    <p class="custom-text-color custom-text-sm">© 2025 Sample Company , ALL RIGHTS RESERVED</p>
-                </div>
             </div>
         </div>
-    </div>
     `;
 
     return foot;
@@ -60,12 +58,11 @@ const createNav = () => {
                 </button>
                 <div class="collapse navbar-collapse py-2" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item"><a class="nav-link" href="${scriptComponentDir}../src/pages/about/about.html">About Us</a></li>
-                        <li class="nav-item"><a class="nav-link" href="${scriptComponentDir}../src/pages/orgChart/orgChart.html">Org Chart</a></li>
-                        <li class="nav-item"><a class="nav-link" href="${scriptComponentDir}../src/pages/companies/companies.html">Companies</a></li>
-                        <li class="nav-item"><a class="nav-link" href="${scriptComponentDir}../src/pages/activity/activity.html">Activity</a></li>
-                        <li class="nav-item"><a class="nav-link" href="${scriptComponentDir}../src/pages/news/news.html">News</a></li>
-                        <li class="nav-item"><a class="nav-link" href="${scriptComponentDir}../src/pages/members/members.html">Members</a></li>
+                        <li class="nav-item"><a class="nav-link fs-5" href="${scriptComponentDir}../src/pages/about/about.html">About Us</a></li>
+                        <li class="nav-item"><a class="nav-link fs-5" href="${scriptComponentDir}../src/pages/orgChart/orgChart.html">Org Chart</a></li>
+                        <li class="nav-item"><a class="nav-link fs-5" href="${scriptComponentDir}../src/pages/companies/companies.html">Companies</a></li>
+                        <li class="nav-item"><a class="nav-link fs-5" href="${scriptComponentDir}../src/pages/activity/activity.html">Activity</a></li>
+                        <li class="nav-item"><a class="nav-link fs-5" href="${scriptComponentDir}../src/pages/members/members.html">Members</a></li>
                     </ul>
 
                     <div id="authContainer" class="d-flex align-items-center">

@@ -15,9 +15,6 @@ if ($stmt) {
     while ($row = $result->fetch_assoc()) {
         $row['period_start'] = date('Y', strtotime($row['period_start']));
         $row['period_end'] = date('Y', strtotime($row['period_end']));
-        if ($row['president_picture']) {
-            $row['president_picture'] = $row['president_picture'];
-        }
         $data[] = $row;
     }
 
